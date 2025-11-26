@@ -10,8 +10,13 @@ class ProductController extends Controller
 {
     public function index()
     {
+        // Mengambil data produk dengan pagination
         $products = Product::latest()->paginate(10);
-        return view('admin.products.index', compact('products'));
+        
+        // Cek apakah ada produk dengan stok kritis (<= 5) untuk notifikasi global
+        $lowStockAlert = Product::where('stock', '<=', 5)->exists();
+
+        return view('admin.products.index', compact('products', 'lowStockAlert'));
     }
 
     public function create()
@@ -24,6 +29,8 @@ class ProductController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            // Validasi stok wajib diisi angka minimal 0
+            'stock' => 'required|integer|min:0', 
         ]);
 
         Product::create($request->all());
@@ -47,6 +54,7 @@ class ProductController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'stock' => 'required|integer|min:0',
         ]);
 
         $product->update($request->all());

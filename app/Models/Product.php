@@ -10,7 +10,8 @@ class Product extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'description'];
+    // Tambahkan 'stock' agar bisa diisi (mass assignment)
+    protected $fillable = ['name', 'description', 'stock'];
 
     // Relasi: Satu produk bisa ada di banyak order
     public function orders(): HasMany

@@ -21,6 +21,12 @@
                         </div>
 
                         <div class="mt-4">
+                            <x-input-label for="stock" :value="__('Stok Barang')" />
+                            <x-text-input id="stock" class="block mt-1 w-full" type="number" name="stock" :value="old('stock', $product->stock)" min="0" required />
+                            <x-input-error :messages="$errors->get('stock')" class="mt-2" />
+                        </div>
+
+                        <div class="mt-4">
                             <x-input-label for="description" :value="__('Deskripsi (Opsional)')" />
                             <textarea id="description" name="description" rows="4" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">{{ old('description', $product->description) }}</textarea>
                             <x-input-error :messages="$errors->get('description')" class="mt-2" />

@@ -17,6 +17,14 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            
+            <?php if(isset($lowStockAlert) && $lowStockAlert): ?>
+                <div class="mb-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4" role="alert">
+                    <p class="font-bold">Peringatan!</p>
+                    <p>Beberapa produk memiliki stok yang menipis (Hampir Habis). Silakan periksa daftar di bawah.</p>
+                </div>
+            <?php endif; ?>
+
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     
@@ -54,6 +62,8 @@
                             <thead class="bg-gray-50">
                                 <tr>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Produk</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stok</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Deskripsi</th>
                                     <th scope="col" class="relative px-6 py-3">
                                         <span class="sr-only">Aksi</span>
@@ -63,8 +73,27 @@
                             <tbody class="bg-white divide-y divide-gray-200">
                                 <?php $__empty_1 = true; $__currentLoopData = $products; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                                     <tr>
-                                        <td class="px-6 py-4 whitespace-nowrap"><?php echo e($product->name); ?></td>
-                                        <td class="px-6 py-4 whitespace-nowrap"><?php echo e(Str::limit($product->description, 50)); ?></td>
+                                        <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900"><?php echo e($product->name); ?></td>
+                                        
+                                        <td class="px-6 py-4 whitespace-nowrap"><?php echo e($product->stock); ?></td>
+                                        
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <?php if($product->stock == 0): ?>
+                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                                    Habis
+                                                </span>
+                                            <?php elseif($product->stock <= 5): ?>
+                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                                    Hampir Habis
+                                                </span>
+                                            <?php else: ?>
+                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                                    Tersedia
+                                                </span>
+                                            <?php endif; ?>
+                                        </td>
+
+                                        <td class="px-6 py-4 whitespace-nowrap text-gray-500"><?php echo e(Str::limit($product->description, 50)); ?></td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                             <?php if (isset($component)) { $__componentOriginal3b0e04e43cf890250cc4d85cff4d94af = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal3b0e04e43cf890250cc4d85cff4d94af = $attributes; } ?>
@@ -90,14 +119,14 @@
                                                 <?php echo method_field('DELETE'); ?>
                                                 <?php if (isset($component)) { $__componentOriginal656e8c5ea4d9a4fa173298297bfe3f11 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal656e8c5ea4d9a4fa173298297bfe3f11 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.danger-button','data' => ['type' => 'submit']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.danger-button','data' => ['type' => 'submit','class' => 'ml-2']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('danger-button'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['type' => 'submit']); ?>Hapus <?php echo $__env->renderComponent(); ?>
+<?php $component->withAttributes(['type' => 'submit','class' => 'ml-2']); ?>Hapus <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal656e8c5ea4d9a4fa173298297bfe3f11)): ?>
 <?php $attributes = $__attributesOriginal656e8c5ea4d9a4fa173298297bfe3f11; ?>
@@ -112,7 +141,7 @@
                                     </tr>
                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                     <tr>
-                                        <td colspan="3" class="px-6 py-4 whitespace-nowrap text-center text-gray-500">
+                                        <td colspan="5" class="px-6 py-4 whitespace-nowrap text-center text-gray-500">
                                             Belum ada produk.
                                         </td>
                                     </tr>

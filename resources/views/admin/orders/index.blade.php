@@ -14,6 +14,12 @@
             </div>
             @endif
 
+            @if (session('error'))
+            <div class="mb-4 p-4 bg-red-100 text-red-700 rounded shadow-sm sm:rounded-lg">
+                {{ session('error') }}
+            </div>
+            @endif
+
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     <div class="overflow-x-auto">
@@ -47,13 +53,11 @@
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-
                                         <x-primary-button
                                             type="button"
                                             @click="selectedOrder = {{ $order->toJson() }}; open = true">
                                             Lihat Detail
                                         </x-primary-button>
-
                                     </td>
                                 </tr>
                                 @empty
@@ -148,11 +152,37 @@
                                 <div>
                                     <x-input-label for="status" value="Ubah Status" />
                                     <select id="status" name="status" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
-                                        <option value="Menunggu Konfirmasi" x-bind:selected="selectedOrder.status == 'Menunggu Konfirmasi'">Menunggu Konfirmasi</option>
-                                        <option value="Sedang Diproses" x-bind:selected="selectedOrder.status == 'Sedang Diproses'">Sedang Diproses</option>
-                                        <option value="Selesai" x-bind:selected="selectedOrder.status == 'Selesai'">Selesai</option>
-                                        <option value="Dibatalkan" x-bind:selected="selectedOrder.status == 'Dibatalkan'">Dibatalkan</option>
+                                        
+                                        <option value="Menunggu Konfirmasi" 
+                                                x-show="selectedOrder.status == 'Menunggu Konfirmasi'"
+                                                x-bind:selected="selectedOrder.status == 'Menunggu Konfirmasi'">
+                                            Menunggu Konfirmasi
+                                        </option>
+
+                                        <option value="Sedang Diproses" 
+                                                x-show="['Menunggu Konfirmasi', 'Sedang Diproses'].includes(selectedOrder.status)"
+                                                x-bind:selected="selectedOrder.status == 'Sedang Diproses'">
+                                            Sedang Diproses
+                                        </option>
+
+                                        <option value="Selesai" 
+                                                x-show="selectedOrder.status != 'Dibatalkan' && selectedOrder.status != 'Menunggu Konfirmasi'"
+                                                x-bind:selected="selectedOrder.status == 'Selesai'">
+                                            Selesai
+                                        </option>
+
+                                        <option value="Dibatalkan" 
+                                                x-show="selectedOrder.status != 'Selesai'"
+                                                x-bind:selected="selectedOrder.status == 'Dibatalkan'">
+                                            Dibatalkan
+                                        </option>
                                     </select>
+                                    <p class="text-xs text-gray-500 mt-1" x-show="selectedOrder.status == 'Sedang Diproses'">
+                                        *Mengubah ke 'Selesai' akan menutup pesanan.
+                                    </p>
+                                    <p class="text-xs text-blue-500 mt-1" x-show="selectedOrder.status == 'Menunggu Konfirmasi'">
+                                        *Mengubah ke 'Sedang Diproses' akan mengurangi stok otomatis.
+                                    </p>
                                 </div>
                             </div>
                         </div>
